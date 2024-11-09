@@ -8,10 +8,14 @@ public class CardScript : MonoBehaviour
 {
 
     private int id;
+
     [SerializeField] private Image cardImage;
+    [SerializeField] private GameObject cardBack;    
+    
     private Action<CardScript> cardSelectionCallback;
 
-    private bool canBeSelected;
+    private bool isCardFlipped = false;
+    private bool canBeSelected = false;
 
     public void Init(int _id, Sprite cardSprite, Action<CardScript> _cardSelectionCallback)
     { 
@@ -45,6 +49,12 @@ public class CardScript : MonoBehaviour
     public void OnCardFinishDeselectingAnimation()
     {
         canBeSelected = true;
+    }
+
+    public void FlipCard()
+    {
+        isCardFlipped = !isCardFlipped;
+        cardBack.SetActive(isCardFlipped);
     }
 
     public void ScoreCard()
