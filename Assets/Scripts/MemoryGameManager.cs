@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class MemoryGameManager : MonoBehaviour
 {
+    [SerializeField] BoardGameBuilderScript boardGameBuilderScript;
+
     private List<CardScript> selectedCards = new List<CardScript>();
 
     // Start is called before the first frame update
     void Start()
     {
         //Call card grid creator here
+        boardGameBuilderScript.CreateBoard(4, 12, OnCardSelected);
     }
 
     // Update is called once per frame
