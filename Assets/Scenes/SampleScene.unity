@@ -275,6 +275,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 8fee5093af7e18940bb4f5337593cfac, type: 3}
   - {fileID: 21300000, guid: ad95dc8fde7902a44bdd12315c53599c, type: 3}
   - {fileID: 21300000, guid: 5124761f49155f7468fa31360db5968f, type: 3}
+  targetContainer: {fileID: 1636853470}
   selectedCardSprites: []
 --- !u!1 &99652821
 GameObject:
@@ -699,7 +700,7 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3

@@ -10,21 +10,28 @@ public class BoardGameBuilderScript : MonoBehaviour
     [SerializeField] CardScript cardPrefabScript;
     [SerializeField] List<Sprite> possibleCardSprites;
 
+    [SerializeField] RectTransform targetContainer;
+
     [SerializeField] List<Sprite> selectedCardSprites;
 
-    public List<CardScript> CreateBoard(int lines, int columns, Action<CardScript> cardSelectedCallback)
+    public List<CardScript> CreateBoard(int rows, int columns, Action<CardScript> cardSelectedCallback)
     {
-        if(!CheckForInputValidity(lines) || !CheckForInputValidity(columns) || !CheckForNumberOfCardsValidity(lines,columns))
+        if(!CheckForInputValidity(rows) || !CheckForInputValidity(columns) || !CheckForNumberOfCardsValidity(rows,columns))
         {
-            Debug.LogError($"Invalid input for lines and columns: {lines} by {columns}");
+            Debug.LogError($"Invalid input for lines and columns: {rows} by {columns}");
             return null;
         }
+
+        float scalingFactor = CalculateScalingFactor(rows, columns);
+        Debug.Log($"Scaling factor found: {scalingFactor}");
+
         gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
         gridLayoutGroup.constraintCount = columns;
+        gridLayoutGroup.cellSize = gridLayoutGroup.cellSize * scalingFactor;
 
         List<CardScript> retVal = new List<CardScript>();
 
-        int cardsToCreate = lines * columns;
+        int cardsToCreate = rows * columns;
         int spritesToPick = cardsToCreate / 2;
 
         List<Sprite> cardsSprites = SelectCardSprites(spritesToPick);
@@ -47,6 +54,22 @@ public class BoardGameBuilderScript : MonoBehaviour
         }
 
         return retVal;
+    }
+
+    private float CalculateScalingFactor(int rows, int columns)
+    {
+        float targetSizeX = targetContainer.rect.width;
+        float predictedSizeX = ((RectTransform)cardPrefabScript.gameObject.transform).sizeDelta.x * columns;
+        float scaleX = targetSizeX / predictedSizeX;
+        Debug.Log($"X info targetSizeX:{targetSizeX} predictedSizeX:{predictedSizeX} scaleX:{scaleX}");
+
+        float targetSizeY = targetContainer.rect.height;
+        float predictedSizeY = ((RectTransform)cardPrefabScript.gameObject.transform).sizeDelta.y * rows;
+        float scaleY = targetSizeY / predictedSizeY;
+        Debug.Log($"Y info targetSizeY:{targetSizeY} predictedSizeY:{predictedSizeY} scaleY:{scaleY}");
+
+        return MathF.Min(scaleX, scaleY);
+
     }
 
     private List<Sprite> SelectCardSprites(int spriteNumber)
@@ -78,18 +101,6 @@ public class BoardGameBuilderScript : MonoBehaviour
         for(int i = 0; i < cardNumber; i++)
             retVal.Add(i);
         return retVal;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public bool CheckForInputValidity(int value)
