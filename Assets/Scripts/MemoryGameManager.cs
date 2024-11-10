@@ -6,13 +6,25 @@ public class MemoryGameManager : MonoBehaviour
 {
     [SerializeField] BoardGameBuilderScript boardGameBuilderScript;
 
+    private List<CardScript> allCards;
     private List<CardScript> selectedCards = new List<CardScript>();
 
     // Start is called before the first frame update
     void Start()
     {
         //Call card grid creator here
-        boardGameBuilderScript.CreateBoard(4, 12, OnCardSelected);
+        allCards = boardGameBuilderScript.CreateBoard(4, 12, OnCardSelected);
+        StartCoroutine(FirstPeekCoroutine());
+    }
+
+    public IEnumerator FirstPeekCoroutine()
+    {
+        //TODO set peek time as variable
+        yield return new WaitForSeconds(1.5f);
+        foreach (CardScript card in allCards)
+        {
+            card.DeselectCard();
+        }
     }
 
     // Update is called once per frame
