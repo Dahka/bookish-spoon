@@ -67,6 +67,7 @@ public class CardScript : MonoBehaviour
     public void ScoreCard()
     {
         //Play small animation
+        animator.SetTrigger("Match");
     }
 
     public int GetID()
