@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -8,6 +10,9 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] int cardMatchingScore = 20;
     [SerializeField] int cardMatchingMultiplier = 1;
     [SerializeField] float scoreUpdatePerSecond = 100;
+
+    [SerializeField] TMP_Text scoreDisplayText;
+    [SerializeField] TMP_Text multiplierDisplayText;
 
     private int currentScore = 0;
     private int currentScoreMultiplier = 1;
@@ -33,22 +38,35 @@ public class ScoreManager : MonoBehaviour
                 shouldUpdateScoreDisplay = false;
             }
             //Update UI here
+            UpdateScoreText();
         }
     }
 
     public void OnScore()
     {
         currentScore += cardMatchingScore * currentScoreMultiplier;
-        cardMatchingMultiplier += cardMatchingMultiplier;
+        currentScoreMultiplier += cardMatchingMultiplier;
         shouldUpdateScoreDisplay = true;
 
         //Update multiplier UI here
+        UpdateMultiplierText();
     }
 
     public void OnMistake()
     {
         currentScoreMultiplier = 1;
         //Update UI here
+        UpdateMultiplierText();
+    }
+
+    private void UpdateScoreText()
+    {
+        scoreDisplayText.SetText(currentDisplayScore.ToString());
+    }
+
+    private void UpdateMultiplierText()
+    {
+        multiplierDisplayText.SetText(currentScoreMultiplier.ToString());
     }
 
 }
