@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 54511750}
   - component: {fileID: 54511749}
   - component: {fileID: 54511751}
+  - component: {fileID: 54511752}
   m_Layer: 0
   m_Name: Logic
   m_TagString: Untagged
@@ -153,6 +154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boardGameBuilderScript: {fileID: 54511751}
+  scoreManager: {fileID: 54511752}
+  firstPeekTime: 1.5
 --- !u!4 &54511750
 Transform:
   m_ObjectHideFlags: 0
@@ -277,6 +280,21 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 5124761f49155f7468fa31360db5968f, type: 3}
   targetContainer: {fileID: 1636853470}
   selectedCardSprites: []
+--- !u!114 &54511752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 54511748}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b0ce1db8b5b91449ad739f46541fbce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardMatchingScore: 20
+  cardMatchingMultiplier: 1
+  scoreUpdatePerSecond: 100
 --- !u!1 &99652821
 GameObject:
   m_ObjectHideFlags: 0
@@ -507,7 +525,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1670734566318135124, guid: 7bdcfddbbe7cd1146bb584621d65e59c, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 500
+      value: 500.00003
       objectReference: {fileID: 0}
     - target: {fileID: 1670734566318135124, guid: 7bdcfddbbe7cd1146bb584621d65e59c, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -789,7 +807,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -37.659973, y: 17.859985}
+  m_AnchoredPosition: {x: -37.659912, y: 17.859985}
   m_SizeDelta: {x: -724.31, y: -297.07}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1636853472

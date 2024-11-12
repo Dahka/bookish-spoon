@@ -5,9 +5,12 @@ using UnityEngine;
 public class MemoryGameManager : MonoBehaviour
 {
     [SerializeField] BoardGameBuilderScript boardGameBuilderScript;
+    [SerializeField] ScoreManager scoreManager;
 
     private List<CardScript> allCards;
     private List<CardScript> selectedCards = new List<CardScript>();
+
+    [SerializeField] float firstPeekTime = 1.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -20,7 +23,7 @@ public class MemoryGameManager : MonoBehaviour
     public IEnumerator FirstPeekCoroutine()
     {
         //TODO set peek time as variable
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(firstPeekTime);
         foreach (CardScript card in allCards)
         {
             card.DeselectCard();
@@ -56,20 +59,16 @@ public class MemoryGameManager : MonoBehaviour
             //Play match sound
             card1.ScoreCard();
             card2.ScoreCard();
-            Score();
+            scoreManager.OnScore();
         }
         else
         {
             //Play no match sound
             card1.DeselectCard();
             card2.DeselectCard();
+            scoreManager.OnMistake();
         }
         selectedCards.RemoveRange(0, 2);
-    }
-
-    private void Score()
-    {
-        //score and combo logic here
     }
 
 }
