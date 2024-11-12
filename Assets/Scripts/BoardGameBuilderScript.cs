@@ -14,7 +14,7 @@ public class BoardGameBuilderScript : MonoBehaviour
 
     [SerializeField] List<Sprite> selectedCardSprites;
 
-    public List<CardScript> CreateBoard(int rows, int columns, Action<CardScript> cardSelectedCallback)
+    public List<CardScript> CreateBoard(int rows, int columns, Action<CardScript> cardSelectedCallback, Action<SoundManager.AudioType> cardFlipAudioCallback)
     {
         if(!CheckForInputValidity(rows) || !CheckForInputValidity(columns) || !CheckForNumberOfCardsValidity(rows,columns))
         {
@@ -49,7 +49,7 @@ public class BoardGameBuilderScript : MonoBehaviour
             int cardId = cardNumber / 2;
             Debug.Log($"Created with cardNumber:{cardNumber}, cardId:{cardId}");
             CardScript instantiatedCard = Instantiate(cardPrefabScript, gridLayoutGroup.transform);
-            instantiatedCard.Init(cardId, cardsSprites[cardId], cardSelectedCallback);
+            instantiatedCard.Init(cardId, cardsSprites[cardId], cardSelectedCallback, cardFlipAudioCallback);
             retVal.Add(instantiatedCard);
         }
 

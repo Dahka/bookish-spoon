@@ -13,17 +13,19 @@ public class CardScript : MonoBehaviour
     [SerializeField] private GameObject cardBack;    
     
     private Action<CardScript> cardSelectionCallback;
+    private Action<SoundManager.AudioType> cardFlipAudioCallback;
 
     private bool isCardFlipped = false;
     private bool canBeSelected = false;
 
     [SerializeField] private Animator animator;
 
-    public void Init(int _id, Sprite cardSprite, Action<CardScript> _cardSelectionCallback)
+    public void Init(int _id, Sprite cardSprite, Action<CardScript> _cardSelectionCallback, Action<SoundManager.AudioType> _cardFlipAudioCallback)
     { 
         id = _id;
         cardImage.sprite = cardSprite;
         cardSelectionCallback = _cardSelectionCallback;
+        cardFlipAudioCallback = _cardFlipAudioCallback;
     }
 
     public void SelectCard()
@@ -35,6 +37,7 @@ public class CardScript : MonoBehaviour
         Debug.Log("Entered Card 2");
         canBeSelected = false;
         //Play card flip sound
+        cardFlipAudioCallback.Invoke(SoundManager.AudioType.CardFlip);
         //Start flip up animation
         animator.SetTrigger("FlipUp");
     }

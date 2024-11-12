@@ -9,6 +9,7 @@ public class MemoryGameManager : MonoBehaviour
 {
     [SerializeField] BoardGameBuilderScript boardGameBuilderScript;
     [SerializeField] ScoreManager scoreManager;
+    [SerializeField] SoundManager soundManager;
 
     [SerializeField] GameObject gameMenuObject;
     [SerializeField] TMP_InputField rowInputField;
@@ -40,7 +41,7 @@ public class MemoryGameManager : MonoBehaviour
             errorMessageObject.SetActive(true);
             return;
         }
-        allCards = boardGameBuilderScript.CreateBoard(row, column, OnCardSelected);
+        allCards = boardGameBuilderScript.CreateBoard(row, column, OnCardSelected, soundManager.PlayAudio);
         if(allCards == null)
         {
             errorMessageObject.SetActive(true);
@@ -61,12 +62,6 @@ public class MemoryGameManager : MonoBehaviour
         {
             card.DeselectCard();
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public void OnCardSelected(CardScript card)
@@ -98,6 +93,10 @@ public class MemoryGameManager : MonoBehaviour
             {
                 FinishGame();
             }
+            else
+            {
+                soundManager.PlayAudio(SoundManager.AudioType.CardMatch);
+            }
         }
         else
         {
@@ -105,6 +104,7 @@ public class MemoryGameManager : MonoBehaviour
             card1.DeselectCard();
             card2.DeselectCard();
             scoreManager.OnMistake();
+            soundManager.PlayAudio(SoundManager.AudioType.CardMiss);
         }
         selectedCards.RemoveRange(0, 2);
     }
@@ -113,6 +113,7 @@ public class MemoryGameManager : MonoBehaviour
     {
         congratulationsObject.SetActive(true);
         congratulationsText.SetText($"Your score was: {scoreManager.GetScore()} points, want to go for another game?");
+        soundManager.PlayVictoryAudio();
     }
 
     public void Restart()
