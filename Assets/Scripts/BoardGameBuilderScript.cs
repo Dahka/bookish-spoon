@@ -59,12 +59,12 @@ public class BoardGameBuilderScript : MonoBehaviour
     private float CalculateScalingFactor(int rows, int columns)
     {
         float targetSizeX = targetContainer.rect.width;
-        float predictedSizeX = ((RectTransform)cardPrefabScript.gameObject.transform).sizeDelta.x * columns;
+        float predictedSizeX = gridLayoutGroup.cellSize.x * columns;
         float scaleX = targetSizeX / predictedSizeX;
         Debug.Log($"X info targetSizeX:{targetSizeX} predictedSizeX:{predictedSizeX} scaleX:{scaleX}");
 
         float targetSizeY = targetContainer.rect.height;
-        float predictedSizeY = ((RectTransform)cardPrefabScript.gameObject.transform).sizeDelta.y * rows;
+        float predictedSizeY = gridLayoutGroup.cellSize.y * rows;
         float scaleY = targetSizeY / predictedSizeY;
         Debug.Log($"Y info targetSizeY:{targetSizeY} predictedSizeY:{predictedSizeY} scaleY:{scaleY}");
 

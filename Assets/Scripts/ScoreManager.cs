@@ -69,4 +69,18 @@ public class ScoreManager : MonoBehaviour
         multiplierDisplayText.SetText(currentScoreMultiplier.ToString());
     }
 
+    public void Reset()
+    {
+        currentScore = 0;
+        currentDisplayScore = 0;
+        currentScoreMultiplier = 1;
+        UpdateScoreText();
+        UpdateMultiplierText();
+    }
+
+    public int GetScore()
+    {
+        return currentScore;
+    }
+
 }

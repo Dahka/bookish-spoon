@@ -1,28 +1,61 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MemoryGameManager : MonoBehaviour
 {
     [SerializeField] BoardGameBuilderScript boardGameBuilderScript;
     [SerializeField] ScoreManager scoreManager;
 
+    [SerializeField] GameObject gameMenuObject;
+    [SerializeField] TMP_InputField rowInputField;
+    [SerializeField] TMP_InputField columnInputField;
+    [SerializeField] GameObject errorMessageObject;
+
+    [SerializeField] GameObject congratulationsObject;
+    [SerializeField] TMP_Text congratulationsText;
+
     private List<CardScript> allCards;
     private List<CardScript> selectedCards = new List<CardScript>();
+    private int cardsMatched = 0;
 
     [SerializeField] float firstPeekTime = 1.5f;
 
     // Start is called before the first frame update
     void Start()
     {
+        errorMessageObject.SetActive(false);
+        gameMenuObject.SetActive(true);
         //Call card grid creator here
-        allCards = boardGameBuilderScript.CreateBoard(4, 12, OnCardSelected);
+    }
+
+    public void OnGameStart()
+    {
+        int row, column;
+        if(!int.TryParse(rowInputField.text, out row) || !int.TryParse(columnInputField.text, out column))
+        {
+            errorMessageObject.SetActive(true);
+            return;
+        }
+        allCards = boardGameBuilderScript.CreateBoard(row, column, OnCardSelected);
+        if(allCards == null)
+        {
+            errorMessageObject.SetActive(true);
+            return;
+        }
+
+        gameMenuObject.SetActive(false);
+        errorMessageObject.SetActive(false);
+
         StartCoroutine(FirstPeekCoroutine());
+
     }
 
     public IEnumerator FirstPeekCoroutine()
     {
-        //TODO set peek time as variable
         yield return new WaitForSeconds(firstPeekTime);
         foreach (CardScript card in allCards)
         {
@@ -60,6 +93,11 @@ public class MemoryGameManager : MonoBehaviour
             card1.ScoreCard();
             card2.ScoreCard();
             scoreManager.OnScore();
+            cardsMatched += 2;
+            if(cardsMatched >= allCards.Count) 
+            {
+                FinishGame();
+            }
         }
         else
         {
@@ -69,6 +107,26 @@ public class MemoryGameManager : MonoBehaviour
             scoreManager.OnMistake();
         }
         selectedCards.RemoveRange(0, 2);
+    }
+
+    public void FinishGame()
+    {
+        congratulationsObject.SetActive(true);
+        congratulationsText.SetText($"Your score was: {scoreManager.GetScore()} points, want to go for another game?");
+    }
+
+    public void Restart()
+    {
+        cardsMatched = 0;
+        congratulationsObject.SetActive(false);
+        scoreManager.Reset();
+        selectedCards.Clear();
+        foreach(CardScript card in allCards)
+        {
+            Destroy(card.gameObject);
+        }
+        allCards.Clear();
+        gameMenuObject.SetActive(true);
     }
 
 }
