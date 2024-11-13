@@ -6,20 +6,27 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 public class MemoryGameManager : MonoBehaviour
 {
+    [Header("Scripts References")]
     [SerializeField] BoardGameBuilderScript boardGameBuilderScript;
     [SerializeField] ScoreManager scoreManager;
     [SerializeField] SoundManager soundManager;
 
+    [Header("Game Menu References")]
     [SerializeField] GameObject gameMenuObject;
     [SerializeField] TMP_InputField rowInputField;
     [SerializeField] TMP_InputField columnInputField;
     [SerializeField] GameObject errorMessageObject;
 
+    [Header("Congratulations Menu References")]
     [SerializeField] GameObject congratulationsObject;
     [SerializeField] TMP_Text congratulationsText;
+
+    [Header("Exit Menu References")]
+    [SerializeField] GameObject exitMenu;
 
     private List<CardScript> allCards = new List<CardScript>();
     private List<CardScript> selectedCards = new List<CardScript>();
@@ -27,16 +34,23 @@ public class MemoryGameManager : MonoBehaviour
 
     private int rows, columns;
 
-    private const string SAVE_DATA_FILENAME = "save.data";
+    public const string SAVE_DATA_FILENAME = "save.data";
 
+    [Header("Settings Variables")]
     [SerializeField] float firstPeekTime = 1.5f;
 
     // Start is called before the first frame update
     void Start()
     {
         errorMessageObject.SetActive(false);
+        exitMenu.SetActive(false);
         gameMenuObject.SetActive(true);
-        //Call card grid creator here
+
+        if(PlayerPrefs.GetInt("LoadGame", 0) == 1)
+        {
+            PlayerPrefs.SetInt("LoadGame", 0);
+            LoadGame();
+        }
     }
 
     public void OnGameStart()
@@ -185,7 +199,8 @@ public class MemoryGameManager : MonoBehaviour
 
         cardsMatched = saveData.cardsMatchedIndex.Count;
 
-        //StartCoroutine(FirstPeekCoroutine());
+        if(cardsMatched >= allCards.Count)
+            FinishGame();
     }
 
     private List<int> GetCardsIds()
@@ -209,6 +224,13 @@ public class MemoryGameManager : MonoBehaviour
             }
         }
         return retVal;
+    }
+
+    public void OnExitToTitle(bool saveBeforeExiting)
+    {
+        if (saveBeforeExiting)
+            SaveGame();
+        SceneManager.LoadScene("StartMenuScene");
     }
 
 }

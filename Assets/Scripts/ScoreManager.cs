@@ -6,11 +6,12 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-
+    [Header("Score Variables")]
     [SerializeField] int cardMatchingScore = 20;
     [SerializeField] int cardMatchingMultiplier = 1;
     [SerializeField] float scoreUpdatePerSecond = 100;
 
+    [Header("Text References")]
     [SerializeField] TMP_Text scoreDisplayText;
     [SerializeField] TMP_Text multiplierDisplayText;
 
@@ -66,7 +67,7 @@ public class ScoreManager : MonoBehaviour
 
     private void UpdateMultiplierText()
     {
-        multiplierDisplayText.SetText(currentScoreMultiplier.ToString());
+        multiplierDisplayText.SetText($"x{currentScoreMultiplier.ToString()}");
     }
 
     public void Reset()
