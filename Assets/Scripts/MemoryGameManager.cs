@@ -209,6 +209,17 @@ public class MemoryGameManager : MonoBehaviour
             FinishGame();
     }
 
+    public void DeleteSave()
+    {
+        string filePath = Application.persistentDataPath + Path.DirectorySeparatorChar + SAVE_DATA_FILENAME;
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"Could not find save file at path: {filePath}");
+            return;
+        }
+        File.Delete(filePath);
+    }
+
     private List<int> GetCardsIds()
     {
         List<int> retVal = new List<int>();
