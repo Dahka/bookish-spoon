@@ -87,4 +87,13 @@ public class ScoreManager : MonoBehaviour
     {
         return currentScoreMultiplier;
     }
+
+    public void LoadScore(int score, int multiplier)
+    {
+        currentScore = score;
+        currentDisplayScore = score;
+        currentScoreMultiplier = multiplier;
+        UpdateScoreText();
+        UpdateMultiplierText();
+    }
 }

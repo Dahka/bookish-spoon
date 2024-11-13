@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class BoardGameBuilderScript : MonoBehaviour
 {
@@ -49,11 +50,30 @@ public class BoardGameBuilderScript : MonoBehaviour
         return retVal;
     }
 
-    public List<CardScript> RestoreBoard(SaveData saveData)
+    public List<CardScript> RestoreBoard(SaveData saveData, Action<CardScript> cardSelectedCallback, Action<SoundManager.AudioType> cardFlipAudioCallback)
     {
         List<CardScript> retVal = new List<CardScript>();
 
+        if (!CheckForInputValidity(saveData.rows) || !CheckForInputValidity(saveData.columns) || !CheckForNumberOfCardsValidity(saveData.rows, saveData.columns))
+        {
+            Debug.LogError($"Invalid input for lines and columns: {saveData.rows} by {saveData.columns}");
+            return null;
+        }
 
+        ScaleGameBoard(saveData.rows, saveData.columns);
+
+        foreach(int cardId in saveData.cardsIds)
+        {
+            CardScript instantiatedCard = Instantiate(cardPrefabScript, gridLayoutGroup.transform);
+            instantiatedCard.Init(cardId, possibleCardSprites[cardId], cardSelectedCallback, cardFlipAudioCallback);
+            retVal.Add(instantiatedCard);
+            instantiatedCard.SetCardFlipped();
+        }
+
+        foreach(int matchedCardIndex in saveData.cardsMatchedIndex)
+        {
+            retVal[matchedCardIndex].SetCardAsMatched();
+        }
 
         return retVal;
     }

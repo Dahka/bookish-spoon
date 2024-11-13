@@ -21,7 +21,7 @@ public class MemoryGameManager : MonoBehaviour
     [SerializeField] GameObject congratulationsObject;
     [SerializeField] TMP_Text congratulationsText;
 
-    private List<CardScript> allCards;
+    private List<CardScript> allCards = new List<CardScript>();
     private List<CardScript> selectedCards = new List<CardScript>();
     private int cardsMatched = 0;
 
@@ -162,6 +162,30 @@ public class MemoryGameManager : MonoBehaviour
             Debug.LogError($"Could not find save file at path: {filePath}");
             return;
         }
+
+        Restart();
+
+        SaveData saveData = JsonUtility.FromJson<SaveData>(File.ReadAllText(filePath));
+
+        allCards = boardGameBuilderScript.RestoreBoard(saveData, OnCardSelected, soundManager.PlayAudio);
+
+        if (allCards == null)
+        {
+            Debug.LogError($"Error when loading file from path: {filePath}");
+            return;
+        }
+
+        scoreManager.LoadScore(saveData.score, saveData.multiplier);
+
+        gameMenuObject.SetActive(false);
+        errorMessageObject.SetActive(false);
+
+        rows = saveData.rows;
+        columns = saveData.columns;
+
+        cardsMatched = saveData.cardsMatchedIndex.Count;
+
+        //StartCoroutine(FirstPeekCoroutine());
     }
 
     private List<int> GetCardsIds()

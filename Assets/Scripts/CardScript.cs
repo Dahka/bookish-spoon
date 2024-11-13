@@ -83,4 +83,17 @@ public class CardScript : MonoBehaviour
         return isMatched;
     }
 
+    public void SetCardFlipped()
+    {
+        FlipCard();
+        canBeSelected = true;
+    }
+
+    public void SetCardAsMatched()
+    {
+        canBeSelected = false;
+        isMatched = true;
+        gameObject.transform.localScale = Vector3.zero;
+    }
+
 }
