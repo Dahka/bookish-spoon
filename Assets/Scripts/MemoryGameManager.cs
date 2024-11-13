@@ -28,16 +28,17 @@ public class MemoryGameManager : MonoBehaviour
     [Header("Exit Menu References")]
     [SerializeField] GameObject exitMenu;
 
+    [Header("Settings Variables")]
+    [SerializeField] float firstPeekTime = 1.5f;
+
     private List<CardScript> allCards = new List<CardScript>();
     private List<CardScript> selectedCards = new List<CardScript>();
     private int cardsMatched = 0;
+    private bool gameIsRunning = false;
 
     private int rows, columns;
 
     public const string SAVE_DATA_FILENAME = "save.data";
-
-    [Header("Settings Variables")]
-    [SerializeField] float firstPeekTime = 1.5f;
 
     // Start is called before the first frame update
     void Start()
@@ -67,6 +68,7 @@ public class MemoryGameManager : MonoBehaviour
             return;
         }
 
+        gameIsRunning = true;
         gameMenuObject.SetActive(false);
         errorMessageObject.SetActive(false);
 
@@ -133,6 +135,7 @@ public class MemoryGameManager : MonoBehaviour
         congratulationsObject.SetActive(true);
         congratulationsText.SetText($"Your score was: {scoreManager.GetScore()} points, want to go for another game?");
         soundManager.PlayAudio(SoundManager.AudioType.Victory);
+        gameIsRunning = false;
     }
 
     public void Restart()
@@ -147,6 +150,7 @@ public class MemoryGameManager : MonoBehaviour
         }
         allCards.Clear();
         gameMenuObject.SetActive(true);
+        gameIsRunning = false;
     }
 
     public void SaveGame()
@@ -189,6 +193,8 @@ public class MemoryGameManager : MonoBehaviour
             return;
         }
 
+        gameIsRunning = true;
+
         scoreManager.LoadScore(saveData.score, saveData.multiplier);
 
         gameMenuObject.SetActive(false);
@@ -224,6 +230,14 @@ public class MemoryGameManager : MonoBehaviour
             }
         }
         return retVal;
+    }
+
+    public void OnOpenExitMenu()
+    {
+        if (gameIsRunning)
+            exitMenu.SetActive(true);
+        else
+            OnExitToTitle(false);
     }
 
     public void OnExitToTitle(bool saveBeforeExiting)
