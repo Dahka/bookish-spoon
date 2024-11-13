@@ -17,6 +17,7 @@ public class CardScript : MonoBehaviour
 
     private bool isCardFlipped = false;
     private bool canBeSelected = false;
+    private bool isMatched = false;
 
     [SerializeField] private Animator animator;
 
@@ -30,11 +31,9 @@ public class CardScript : MonoBehaviour
 
     public void SelectCard()
     {
-        Debug.Log("Entered Card");
         if (!canBeSelected)
             return;
 
-        Debug.Log("Entered Card 2");
         canBeSelected = false;
         //Play card flip sound
         cardFlipAudioCallback.Invoke(SoundManager.AudioType.CardFlip);
@@ -71,10 +70,17 @@ public class CardScript : MonoBehaviour
     {
         //Play small animation
         animator.SetTrigger("Match");
+        isMatched = true;
     }
 
     public int GetID()
     {
         return id;
     }
+
+    public bool IsMatched()
+    {
+        return isMatched;
+    }
+
 }

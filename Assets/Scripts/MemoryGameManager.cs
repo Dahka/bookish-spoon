@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
 
 public class MemoryGameManager : MonoBehaviour
 {
@@ -23,6 +25,10 @@ public class MemoryGameManager : MonoBehaviour
     private List<CardScript> selectedCards = new List<CardScript>();
     private int cardsMatched = 0;
 
+    private int rows, columns;
+
+    private const string SAVE_DATA_FILENAME = "save.data";
+
     [SerializeField] float firstPeekTime = 1.5f;
 
     // Start is called before the first frame update
@@ -35,13 +41,12 @@ public class MemoryGameManager : MonoBehaviour
 
     public void OnGameStart()
     {
-        int row, column;
-        if(!int.TryParse(rowInputField.text, out row) || !int.TryParse(columnInputField.text, out column))
+        if(!int.TryParse(rowInputField.text, out rows) || !int.TryParse(columnInputField.text, out columns))
         {
             errorMessageObject.SetActive(true);
             return;
         }
-        allCards = boardGameBuilderScript.CreateBoard(row, column, OnCardSelected, soundManager.PlayAudio);
+        allCards = boardGameBuilderScript.CreateBoard(rows, columns, OnCardSelected, soundManager.PlayAudio);
         if(allCards == null)
         {
             errorMessageObject.SetActive(true);
@@ -113,7 +118,7 @@ public class MemoryGameManager : MonoBehaviour
     {
         congratulationsObject.SetActive(true);
         congratulationsText.SetText($"Your score was: {scoreManager.GetScore()} points, want to go for another game?");
-        soundManager.PlayVictoryAudio();
+        soundManager.PlayAudio(SoundManager.AudioType.Victory);
     }
 
     public void Restart()
@@ -130,4 +135,67 @@ public class MemoryGameManager : MonoBehaviour
         gameMenuObject.SetActive(true);
     }
 
+    public void SaveGame()
+    {
+        //Info to be saved: card list with image index
+        //list of cards that were matched
+        //score and multiplier
+
+        SaveData save = new SaveData();
+        save.cardsIds = GetCardsIds();
+        save.cardsMatchedIndex = GetMatchedCardsIndexes();
+        save.score = scoreManager.GetScore();
+        save.multiplier = scoreManager.GetMultiplier();
+        save.rows = rows;
+        save.columns = columns;
+
+        string savePath = Application.persistentDataPath + Path.DirectorySeparatorChar + SAVE_DATA_FILENAME;
+        File.WriteAllText(savePath, JsonUtility.ToJson(save));
+        Debug.Log($"Game sucessfully save at {savePath}");
+    }
+
+    public void LoadGame()
+    {
+        string filePath = Application.persistentDataPath + Path.DirectorySeparatorChar + SAVE_DATA_FILENAME;
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"Could not find save file at path: {filePath}");
+            return;
+        }
+    }
+
+    private List<int> GetCardsIds()
+    {
+        List<int> retVal = new List<int>();
+        foreach(CardScript card in allCards)
+        {
+            retVal.Add(card.GetID());
+        }
+        return retVal;
+    }
+
+    private List<int> GetMatchedCardsIndexes()
+    {
+        List<int> retVal = new List<int>();
+        for(int i = 0; i < allCards.Count; i++)
+        {
+            if (allCards[i].IsMatched())
+            {
+                retVal.Add(i);
+            }
+        }
+        return retVal;
+    }
+
+}
+
+[System.Serializable]
+public class SaveData
+{
+    public List<int> cardsIds;
+    public List<int> cardsMatchedIndex;
+    public int score;
+    public int multiplier;
+    public int rows;
+    public int columns;
 }

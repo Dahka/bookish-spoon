@@ -12,8 +12,6 @@ public class BoardGameBuilderScript : MonoBehaviour
 
     [SerializeField] RectTransform targetContainer;
 
-    [SerializeField] List<Sprite> selectedCardSprites;
-
     public List<CardScript> CreateBoard(int rows, int columns, Action<CardScript> cardSelectedCallback, Action<SoundManager.AudioType> cardFlipAudioCallback)
     {
         if(!CheckForInputValidity(rows) || !CheckForInputValidity(columns) || !CheckForNumberOfCardsValidity(rows,columns))
@@ -22,38 +20,52 @@ public class BoardGameBuilderScript : MonoBehaviour
             return null;
         }
 
-        float scalingFactor = CalculateScalingFactor(rows, columns);
-        Debug.Log($"Scaling factor found: {scalingFactor}");
-
-        gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
-        gridLayoutGroup.constraintCount = columns;
-        gridLayoutGroup.cellSize = gridLayoutGroup.cellSize * scalingFactor;
+        ScaleGameBoard(rows, columns);
 
         List<CardScript> retVal = new List<CardScript>();
 
         int cardsToCreate = rows * columns;
         int spritesToPick = cardsToCreate / 2;
 
-        List<Sprite> cardsSprites = SelectCardSprites(spritesToPick);
-        //Debug, remove later
-        selectedCardSprites = cardsSprites;
+        List<int> cardsSpriteIndexes = SelectCardSpriteIndexes(spritesToPick);
+        if (cardsSpriteIndexes == null)
+            return null;
 
-        List<int> cardNumbers = CreateCardNumberList(cardsToCreate);
+        //List<int> cardNumbers = CreateCardNumberList(cardsToCreate);
 
 
 
         for (int i = 0; i < cardsToCreate; i++)
         {
-            int cardNumber = cardNumbers[UnityEngine.Random.Range(0, cardNumbers.Count)];
-            cardNumbers.Remove(cardNumber);
-            int cardId = cardNumber / 2;
-            Debug.Log($"Created with cardNumber:{cardNumber}, cardId:{cardId}");
+            int index = UnityEngine.Random.Range(0, cardsSpriteIndexes.Count);
+            int cardId = cardsSpriteIndexes[index];
+            cardsSpriteIndexes.RemoveAt(index);
+            Debug.Log($"Created with cardId:{cardId}");
             CardScript instantiatedCard = Instantiate(cardPrefabScript, gridLayoutGroup.transform);
-            instantiatedCard.Init(cardId, cardsSprites[cardId], cardSelectedCallback, cardFlipAudioCallback);
+            instantiatedCard.Init(cardId, possibleCardSprites[cardId], cardSelectedCallback, cardFlipAudioCallback);
             retVal.Add(instantiatedCard);
         }
 
         return retVal;
+    }
+
+    public List<CardScript> RestoreBoard(SaveData saveData)
+    {
+        List<CardScript> retVal = new List<CardScript>();
+
+
+
+        return retVal;
+    }
+
+    private void ScaleGameBoard(int rows, int columns)
+    {
+        float scalingFactor = CalculateScalingFactor(rows, columns);
+        Debug.Log($"Scaling factor found: {scalingFactor}");
+
+        gridLayoutGroup.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
+        gridLayoutGroup.constraintCount = columns;
+        gridLayoutGroup.cellSize = gridLayoutGroup.cellSize * scalingFactor;
     }
 
     private float CalculateScalingFactor(int rows, int columns)
@@ -72,34 +84,29 @@ public class BoardGameBuilderScript : MonoBehaviour
 
     }
 
-    private List<Sprite> SelectCardSprites(int spriteNumber)
+    private List<int> SelectCardSpriteIndexes(int spriteNumber)
     {
         if(spriteNumber > possibleCardSprites.Count)
         {
             Debug.LogError($"Not enough sprites to create board, resquested {spriteNumber} sprites");
+            return null;
         }
 
-        List<Sprite> retVal = new List<Sprite>();
+        List<int> retVal = new List<int>();
         for(int i = 0; i < spriteNumber; i++)
         {
-            Sprite selectedSprite = possibleCardSprites[UnityEngine.Random.Range(0, possibleCardSprites.Count)];
+            int selectedSpriteIndex = UnityEngine.Random.Range(0, possibleCardSprites.Count);
 
             //Randomly selected sprite has already been selected, we try again
-            if(retVal.Contains(selectedSprite))
+            if(retVal.Contains(selectedSpriteIndex))
             {
                 i--;
                 continue;
             }
-            retVal.Add(selectedSprite);
+            //We add twice here to have two matching cards
+            retVal.Add(selectedSpriteIndex);
+            retVal.Add(selectedSpriteIndex);
         }
-        return retVal;
-    }
-
-    private List<int> CreateCardNumberList(int cardNumber)
-    {
-        List<int> retVal = new List<int>();
-        for(int i = 0; i < cardNumber; i++)
-            retVal.Add(i);
         return retVal;
     }
 
@@ -116,4 +123,5 @@ public class BoardGameBuilderScript : MonoBehaviour
             return false;
         return true;
     }
+
 }

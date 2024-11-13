@@ -83,4 +83,8 @@ public class ScoreManager : MonoBehaviour
         return currentScore;
     }
 
+    public int GetMultiplier()
+    {
+        return currentScoreMultiplier;
+    }
 }
