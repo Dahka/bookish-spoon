@@ -21,13 +21,8 @@ public class ScoreManager : MonoBehaviour
     private bool shouldUpdateScoreDisplay = false;
     private int currentDisplayScore = 0;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
+    //We use it to update the score in a smooth way
     void Update()
     {
         if(shouldUpdateScoreDisplay)
@@ -43,6 +38,7 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
+    //Function called when the player matches cards to score
     public void OnScore()
     {
         currentScore += cardMatchingScore * currentScoreMultiplier;
@@ -53,6 +49,7 @@ public class ScoreManager : MonoBehaviour
         UpdateMultiplierText();
     }
 
+    //Function called when the player makes a mistake matching cards
     public void OnMistake()
     {
         currentScoreMultiplier = 1;
@@ -60,16 +57,19 @@ public class ScoreManager : MonoBehaviour
         UpdateMultiplierText();
     }
 
+    //Used for updating the display of the score
     private void UpdateScoreText()
     {
         scoreDisplayText.SetText(currentDisplayScore.ToString());
     }
 
+    //Used for updating the display of the multiplier
     private void UpdateMultiplierText()
     {
         multiplierDisplayText.SetText($"x{currentScoreMultiplier.ToString()}");
     }
 
+    //Function to reset the score of the game
     public void Reset()
     {
         currentScore = 0;
@@ -89,6 +89,7 @@ public class ScoreManager : MonoBehaviour
         return currentScoreMultiplier;
     }
 
+    //Function to restore a previously saved score
     public void LoadScore(int score, int multiplier)
     {
         currentScore = score;

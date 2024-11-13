@@ -21,6 +21,7 @@ public class CardScript : MonoBehaviour
 
     [SerializeField] private Animator animator;
 
+    //Initialization function for the card
     public void Init(int _id, Sprite cardSprite, Action<CardScript> _cardSelectionCallback, Action<SoundManager.AudioType> _cardFlipAudioCallback)
     { 
         id = _id;
@@ -29,6 +30,7 @@ public class CardScript : MonoBehaviour
         cardFlipAudioCallback = _cardFlipAudioCallback;
     }
 
+    //OnClick function for the card
     public void SelectCard()
     {
         if (!canBeSelected)
@@ -41,6 +43,7 @@ public class CardScript : MonoBehaviour
         animator.SetTrigger("FlipUp");
     }
 
+    //Function for turning the card back down
     public void DeselectCard()
     {
         //Start flip down animation
@@ -60,12 +63,14 @@ public class CardScript : MonoBehaviour
         canBeSelected = true;
     }
 
+    //Flip the faces of the card by activating and deactivating the card image, called on the animator
     public void FlipCard()
     {
         isCardFlipped = !isCardFlipped;
         cardBack.SetActive(isCardFlipped);
     }
 
+    //Function for when the card has been matched
     public void ScoreCard()
     {
         //Play small animation
@@ -83,12 +88,14 @@ public class CardScript : MonoBehaviour
         return isMatched;
     }
 
+    //Function for setting card stated after loading
     public void SetCardFlipped()
     {
         FlipCard();
         canBeSelected = true;
     }
 
+    //Function for setting matched card stated after loading
     public void SetCardAsMatched()
     {
         canBeSelected = false;

@@ -41,6 +41,7 @@ public class MemoryGameManager : MonoBehaviour
     public const string SAVE_DATA_FILENAME = "save.data";
 
     // Start is called before the first frame update
+    //Here we set the default state of the scene and Load a game if it was set to be loaded
     void Start()
     {
         errorMessageObject.SetActive(false);
@@ -54,6 +55,7 @@ public class MemoryGameManager : MonoBehaviour
         }
     }
 
+    //Check for validity of the game board and create it if valid
     public void OnGameStart()
     {
         if(!int.TryParse(rowInputField.text, out rows) || !int.TryParse(columnInputField.text, out columns))
@@ -76,6 +78,7 @@ public class MemoryGameManager : MonoBehaviour
 
     }
 
+    //Coroutine for the initial peek at the cards before they are turned down
     public IEnumerator FirstPeekCoroutine()
     {
         yield return new WaitForSeconds(firstPeekTime);
@@ -85,6 +88,7 @@ public class MemoryGameManager : MonoBehaviour
         }
     }
 
+    //Callback function for when a card is selected
     public void OnCardSelected(CardScript card)
     {
         if (selectedCards.Contains(card)) 
@@ -101,6 +105,9 @@ public class MemoryGameManager : MonoBehaviour
         }
     }
 
+    //Comparison function between two cards,
+    //If they match they player scores and we check for end of the game
+    //If not the player loses its multiplier and we turn the cards back down
     public void CompareCards(CardScript card1,  CardScript card2)
     {
         if(card1.GetID() == card2.GetID())
@@ -130,6 +137,7 @@ public class MemoryGameManager : MonoBehaviour
         selectedCards.RemoveRange(0, 2);
     }
 
+    //When the game is finished we show the player the final score and the button to try again
     public void FinishGame()
     {
         congratulationsObject.SetActive(true);
@@ -138,6 +146,7 @@ public class MemoryGameManager : MonoBehaviour
         gameIsRunning = false;
     }
 
+    //Reset the board game state
     public void Restart()
     {
         cardsMatched = 0;
@@ -153,6 +162,7 @@ public class MemoryGameManager : MonoBehaviour
         gameIsRunning = false;
     }
 
+    //Function that gets the information needed to save and restore the game and stores it locally
     public void SaveGame()
     {
         //Info to be saved: card list with image index
@@ -172,6 +182,7 @@ public class MemoryGameManager : MonoBehaviour
         Debug.Log($"Game sucessfully save at {savePath}");
     }
 
+    //Function that build a game board from the saved information 
     public void LoadGame()
     {
         string filePath = Application.persistentDataPath + Path.DirectorySeparatorChar + SAVE_DATA_FILENAME;
@@ -209,6 +220,7 @@ public class MemoryGameManager : MonoBehaviour
             FinishGame();
     }
 
+    //Function to clear the save file
     public void DeleteSave()
     {
         string filePath = Application.persistentDataPath + Path.DirectorySeparatorChar + SAVE_DATA_FILENAME;
@@ -220,6 +232,7 @@ public class MemoryGameManager : MonoBehaviour
         File.Delete(filePath);
     }
 
+    //Function to get the Id of all cards in play
     private List<int> GetCardsIds()
     {
         List<int> retVal = new List<int>();
@@ -230,6 +243,7 @@ public class MemoryGameManager : MonoBehaviour
         return retVal;
     }
 
+    //Function to return the indexes of cards that have already been matched
     private List<int> GetMatchedCardsIndexes()
     {
         List<int> retVal = new List<int>();
@@ -243,6 +257,8 @@ public class MemoryGameManager : MonoBehaviour
         return retVal;
     }
 
+    //Function to check if we should query the player to save their game
+    //Or if there is no game running at the moment, just quit
     public void OnOpenExitMenu()
     {
         if (gameIsRunning)
@@ -251,6 +267,7 @@ public class MemoryGameManager : MonoBehaviour
             OnExitToTitle(false);
     }
 
+    //Function to exit to the title screen
     public void OnExitToTitle(bool saveBeforeExiting)
     {
         if (saveBeforeExiting)
@@ -260,6 +277,7 @@ public class MemoryGameManager : MonoBehaviour
 
 }
 
+//Save data information structure needed to restore a game
 [System.Serializable]
 public class SaveData
 {

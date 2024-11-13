@@ -18,12 +18,14 @@ public class StartMenuManager : MonoBehaviour
         loadGameButton.interactable = File.Exists(filePath);
     }
 
+    //Function to start the game, with bool parameter to determine if we start a new game or load a saved one
     public void StartGame(bool loadSave)
     {
         PlayerPrefs.SetInt("LoadGame", loadSave ? 1 : 0);
         SceneManager.LoadScene("GameScene");
     }
 
+    //Function to exit the game
     public void Exit()
     {
 #if UNITY_EDITOR

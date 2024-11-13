@@ -13,6 +13,7 @@ public class BoardGameBuilderScript : MonoBehaviour
 
     [SerializeField] RectTransform targetContainer;
 
+    //Function to create a new game board based on the specified rows and columns
     public List<CardScript> CreateBoard(int rows, int columns, Action<CardScript> cardSelectedCallback, Action<SoundManager.AudioType> cardFlipAudioCallback)
     {
         if(!CheckForInputValidity(rows) || !CheckForInputValidity(columns) || !CheckForNumberOfCardsValidity(rows,columns))
@@ -50,6 +51,7 @@ public class BoardGameBuilderScript : MonoBehaviour
         return retVal;
     }
 
+    //Function to restore a previously saved board game
     public List<CardScript> RestoreBoard(SaveData saveData, Action<CardScript> cardSelectedCallback, Action<SoundManager.AudioType> cardFlipAudioCallback)
     {
         List<CardScript> retVal = new List<CardScript>();
@@ -78,6 +80,7 @@ public class BoardGameBuilderScript : MonoBehaviour
         return retVal;
     }
 
+    //Function to scale the game board based on a scaling factor
     private void ScaleGameBoard(int rows, int columns)
     {
         float scalingFactor = CalculateScalingFactor(rows, columns);
@@ -88,6 +91,7 @@ public class BoardGameBuilderScript : MonoBehaviour
         gridLayoutGroup.cellSize = gridLayoutGroup.cellSize * scalingFactor;
     }
 
+    //Function to determine the scale factor of the board to fit the target container
     private float CalculateScalingFactor(int rows, int columns)
     {
         float targetSizeX = targetContainer.rect.width;
@@ -104,6 +108,7 @@ public class BoardGameBuilderScript : MonoBehaviour
 
     }
 
+    //Function to get the list of randomly selected card images indexes
     private List<int> SelectCardSpriteIndexes(int spriteNumber)
     {
         if(spriteNumber > possibleCardSprites.Count)
@@ -130,6 +135,7 @@ public class BoardGameBuilderScript : MonoBehaviour
         return retVal;
     }
 
+    //Check if the input value for row/column is between 1 and 20
     public bool CheckForInputValidity(int value)
     {
         if (value < 1 || value > 20)
@@ -137,6 +143,7 @@ public class BoardGameBuilderScript : MonoBehaviour
         return true;
     }
 
+    //Check if the input value for row/column returns an even number of cards
     private bool CheckForNumberOfCardsValidity(int lines, int columns)
     {
         if ((lines * columns) % 2 != 0)

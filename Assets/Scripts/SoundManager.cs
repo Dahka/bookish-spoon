@@ -12,6 +12,7 @@ public class SoundManager : MonoBehaviour
 
     public enum AudioType { CardFlip, CardMatch, CardMiss, Victory }
 
+    //Function to play the four types of Audio
     public void PlayAudio(AudioType audioType)
     {
         AudioClip clip = null;
